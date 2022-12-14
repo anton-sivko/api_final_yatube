@@ -21,12 +21,12 @@ class Post(models.Model):
     image = models.ImageField(
         upload_to='posts/', null=True, blank=True)
     group = models.ForeignKey(
-        Group, on_delete=models.CASCADE,
+        Group, on_delete=models.SET_NULL,
         related_name="posts", blank=True, null=True
     )
 
     def __str__(self):
-        return self.text
+        return self.text[:15]
 
 
 class Comment(models.Model):
@@ -61,3 +61,7 @@ class Follow(models.Model):
 
     class Meta:
         ordering = ['-following']
+        constraints = [models.UniqueConstraint(
+            fields=['user', 'following'],
+            name='unique following')
+        ]
